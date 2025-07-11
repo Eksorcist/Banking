@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Поиск банка по номеру карты</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f5;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 300px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Поиск банка по номеру карты</h1>
+  <input type="text" id="cardNumber" placeholder="Введите номер карты" maxlength="16">
+  <button onclick="lookup()">Найти банк</button>
+  <div id="result"></div>
+
+  <script>
+    let binData = {};
+
+    // Загружаем bin_data.json
+    fetch('bin_data.json')
+      .then(response => response.json())
+      .then(data => binData = data)
+      .catch(error => {
+        document.getElementById('result').innerText = "Ошибка загрузки базы.";
+        console.error("Ошибка загрузки bin_data.json:", error);
+      });
+
+    function lookup() {
+      const number = document.getElementById('cardNumber').value.trim();
+      if (number.length < 6) {
+        document.getElementById('result').innerText = "Введите минимум 6 цифр.";
+        return;
+      }
+      const bin = number.slice(0, 6);
+      const info = binData[bin];
+      const bankName = info ? info.dict : "Банк не найден";
+      document.getElementById('result').innerText = "Результат: " + bankName;
+    }
+  </script>
+</body>
+</html>
